@@ -22,7 +22,8 @@ const saveDb = () => {
 const mainMenu = Markup.keyboard([
     ['📋 Xizmatlarimiz', '💸 Narxlar'],
     ['🛒 Buyurtma berish', '📞 Bog\'lanish'],
-    ['❓ Savollar', '💳 To\'lov uchun']
+    ['❓ Savollar', '💳 To\'lov uchun'],
+    ['📍 Manzil / Lokatsiya']
 ]).resize();
 
 // ---------------------------------------------------------------- //
@@ -272,9 +273,18 @@ bot.hears('❓ Savollar', (ctx) => {
 bot.hears('💳 To\'lov uchun', (ctx) => {
     ctx.reply(
         "💳 To'lov ma'lumotlari:\n\n" +
-        "Biz to'lovni bank kartasi orqali (Click / Payme / UZUM) yohud dillerimizga naqd pulla shaklida " +
-        "jo'natishingiz mumkin. Karta raqamimiz menejer orqali beriladi."
+        "Quyidagi plastik kartaga to'lovni (Click yoki Payme) amalga oshirishingiz mumkin:\n\n" +
+        "💳 Karta raqami: `9860 0101 1521 1137`\n" +
+        "👤 Karta egasi: Shavkatjonov Rakhmatillo\n\n" +
+        "*(Karta raqamini ustiga bossangiz nusxa olib olinadi)*", { parse_mode: "Markdown" }
     );
+});
+
+// 7-TUGMA: Manzil / Lokatsiya
+bot.hears('📍 Manzil / Lokatsiya', (ctx) => {
+    ctx.reply("📍 Bizning manzil: Andijon viloyati, Asaka.\n\n👇 Quyidagi xarita orqali bizni osongina topib kelishingiz mumkin:");
+    // Sexning aniq koordinatalari
+    ctx.replyWithLocation(40.659309, 72.241006); 
 });
 
 // Botni xatolikni tutishi va ishga tushirish funksiyalari
@@ -295,3 +305,10 @@ bot.launch().then(() => {
 // Dastur to'xtatilganida botni uzib qo'yish
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
+
+// Bepul serverlar (masalan, Glitch) uchun oddiy web-server ulab qo'yamiz (uxlab qolmasligi uchun)
+const http = require('http');
+http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Bot ushbu serverda 100% faol ishlab turibdi!');
+}).listen(process.env.PORT || 8080);
