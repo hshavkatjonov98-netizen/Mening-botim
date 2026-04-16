@@ -1,9 +1,33 @@
 {
   "users": [
-    5956571205,
-    6003571072,
-    8202089987,
-    5567886707
+    {
+      "id": "5956571205",
+      "firstName": "",
+      "lastName": "",
+      "username": "",
+      "joinedAt": "2026-04-13T18:03:19.298Z"
+    },
+    {
+      "id": "6003571072",
+      "firstName": "",
+      "lastName": "",
+      "username": "",
+      "joinedAt": "2026-04-13T18:03:19.299Z"
+    },
+    {
+      "id": "8202089987",
+      "firstName": "",
+      "lastName": "",
+      "username": "",
+      "joinedAt": "2026-04-13T18:03:19.299Z"
+    },
+    {
+      "id": "5567886707",
+      "firstName": "",
+      "lastName": "",
+      "username": "",
+      "joinedAt": "2026-04-13T18:03:19.299Z"
+    }
   ],
   "ordersCount": 6
 }
