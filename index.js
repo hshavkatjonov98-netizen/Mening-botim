@@ -93,6 +93,10 @@ const mainMenu = Markup.keyboard([
 ]).resize();
 
 const wizardBack = Markup.keyboard([['⬅️ Orqaga']]).resize();
+const phoneKeyboard = () =>
+    Markup.keyboard([[Markup.button.contactRequest('📱 Raqamni yuborish')], ['⬅️ Orqaga']])
+        .oneTime()
+        .resize();
 // Telegraf Markup bilan ba'zan reply keyboard ichida location button chiqmay qolishi mumkin,
 // shuning uchun reply_markupni Bot API formatida qo'lda beramiz.
 const locationKeyboard = () => ({
@@ -130,19 +134,40 @@ const orderWizard = new Scenes.WizardScene(
         ctx.wizard.state.order.name = ctx.message.text;
         ctx.reply(
             '🛒 <b>Buyurtma</b> <i>2/6</i>\n\n' +
-                '📱 <b>Telefon</b> raqamingiz\n' +
-                '<i>Misol: +998901234567</i>',
-            { ...html, ...wizardBack }
+                '📱 <b>Telefon</b> raqamingizni yuboring\n' +
+                '<i>Pastdagi tugma orqali yuboring yoki qo‘lda kiriting: +998901234567</i>',
+            { ...html, ...phoneKeyboard() }
         );
         return ctx.wizard.next();
     },
     (ctx) => {
-        if (!ctx.message || !ctx.message.text) return;
+        if (!ctx.message) return;
         if (ctx.message.text === '⬅️ Orqaga') {
             ctx.reply('❌ Buyurtma bekor qilindi.', { ...html, ...mainMenu });
             return ctx.scene.leave();
         }
-        ctx.wizard.state.order.phone = ctx.message.text;
+
+        let phone = '';
+        if (ctx.message.contact) {
+            // Faqat foydalanuvchining o'z kontaktini qabul qilamiz
+            if (String(ctx.message.contact.user_id || '') !== String(ctx.from.id)) {
+                ctx.reply('⚠️ Iltimos, o‘zingizning telefon raqamingizni yuboring.', {
+                    ...html,
+                    ...phoneKeyboard()
+                });
+                return;
+            }
+            phone = ctx.message.contact.phone_number || '';
+        } else if (ctx.message.text) {
+            phone = ctx.message.text.trim();
+        }
+
+        if (!phone) {
+            ctx.reply('⚠️ Telefon raqamingizni yuboring.', { ...html, ...phoneKeyboard() });
+            return;
+        }
+
+        ctx.wizard.state.order.phone = phone;
         ctx.reply(
             '🛒 <b>Buyurtma</b> <i>3/6</i>\n\n' +
                 '📦 <b>Xizmat</b>ni tanlang',
